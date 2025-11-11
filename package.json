@@ -32,7 +32,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ankushthakur2007/miyami-websearch-mcp.git"
+    "url": "git+https://github.com/ankushthakur2007/miyami-websearch-mcp.git"
   },
   "bugs": {
     "url": "https://github.com/ankushthakur2007/miyami-websearch-mcp/issues"
