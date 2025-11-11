@@ -33,8 +33,16 @@ export class ApiClient {
     page?: number;
   }): Promise<SearchResponse> {
     try {
-      const response = await this.client.get<SearchResponse>('/search', {
-        params,
+      // Convert 'q' to 'query' for the API
+      const apiParams = {
+        query: params.q,
+        categories: params.categories,
+        language: params.language,
+        page: params.page,
+      };
+      
+      const response = await this.client.get<SearchResponse>('/search-api', {
+        params: apiParams,
       });
       return response.data;
     } catch (error) {
