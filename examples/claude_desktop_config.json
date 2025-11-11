@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "miyami-websearch": {
+      "command": "npx",
+      "args": ["-y", "miyami-websearch-mcp"]
+    }
+  }
+}

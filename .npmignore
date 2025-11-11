@@ -1,0 +1,27 @@
+# Source files (only publish dist/)
+src/
+tsconfig.json
+
+# Development files
+.git/
+.gitignore
+.github/
+.vscode/
+.idea/
+
+# Test files
+test/
+tests/
+*.test.ts
+*.spec.ts
+
+# CI/CD
+.travis.yml
+.circleci/
+
+# Misc
+.DS_Store
+*.log
+.env
+.env.example
+MCP_NPM_PACKAGE_PLAN.xml
