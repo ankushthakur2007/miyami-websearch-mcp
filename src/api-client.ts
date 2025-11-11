@@ -4,7 +4,7 @@
  */
 
 import axios, { AxiosInstance, AxiosError } from 'axios';
-import type { SearchResponse, WebpageContent, ApiError } from './types.js';
+import type { SearchResponse, FetchResponse, SearchAndFetchResponse, ApiError } from './types.js';
 
 // Hardcoded API URL - this is a free service, no configuration needed
 const API_BASE_URL = 'https://miyami-websearch-tool.onrender.com';
@@ -57,14 +57,34 @@ export class ApiClient {
     url: string;
     include_links?: boolean;
     max_content_length?: number;
-  }): Promise<WebpageContent> {
+  }): Promise<FetchResponse> {
     try {
-      const response = await this.client.get<WebpageContent>('/fetch', {
+      const response = await this.client.get<FetchResponse>('/fetch', {
         params,
       });
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'fetch');
+    }
+  }
+
+  /**
+   * Search and fetch - Uses the dedicated API endpoint
+   */
+  async searchAndFetch(params: {
+    query: string;
+    num_results?: number;
+    categories?: string;
+    language?: string;
+    max_content_length?: number;
+  }): Promise<SearchAndFetchResponse> {
+    try {
+      const response = await this.client.get<SearchAndFetchResponse>('/search-and-fetch', {
+        params,
+      });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error, 'search-and-fetch');
     }
   }
 

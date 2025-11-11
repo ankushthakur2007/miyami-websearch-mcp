@@ -16,6 +16,20 @@ export interface SearchResponse {
   results: SearchResult[];
 }
 
+export interface FetchMetadata {
+  title: string;
+  url: string;
+  status_code: number;
+}
+
+export interface FetchResponse {
+  metadata: FetchMetadata;
+  content: string;
+  headings?: Array<{ level: string; text: string }>;
+  links?: Array<{ text: string; url: string }>;
+  images?: Array<{ src: string; alt: string }>;
+}
+
 export interface WebpageContent {
   url: string;
   title: string;
@@ -25,16 +39,30 @@ export interface WebpageContent {
   error?: string;
 }
 
-export interface SearchAndFetchResult {
+export interface SearchAndFetchResponse {
   query: string;
+  num_results_requested: number;
+  num_results_found: number;
+  successful_fetches: number;
+  failed_fetches: number;
   results: Array<{
-    url: string;
-    title: string;
-    search_snippet: string;
-    full_content: string;
-    success: boolean;
+    search_result: {
+      title: string;
+      url: string;
+      snippet: string;
+      engine?: string;
+      score?: number;
+    };
+    fetch_status: 'success' | 'failed';
+    fetched_content?: {
+      title: string;
+      content: string;
+      headings?: Array<{ level: string; text: string }>;
+      content_length: number;
+    };
     error?: string;
   }>;
+  suggestions?: string[];
 }
 
 export interface ApiError {

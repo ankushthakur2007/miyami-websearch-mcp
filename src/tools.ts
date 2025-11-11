@@ -5,7 +5,6 @@
 import { z } from 'zod';
 import { apiClient } from './api-client.js';
 import { formatSearchResults, formatWebpageContent, formatSearchAndFetch, truncateContent } from './formatters.js';
-import type { SearchAndFetchResult } from './types.js';
 
 /**
  * Tool: web_search
@@ -77,55 +76,16 @@ export const searchAndFetchTool = {
 };
 
 export async function handleSearchAndFetch(args: z.infer<typeof searchAndFetchTool.inputSchema>): Promise<string> {
-  // First, perform the search
-  const searchResponse = await apiClient.search({
-    q: args.query,
+  // Use the dedicated API endpoint for search-and-fetch
+  const response = await apiClient.searchAndFetch({
+    query: args.query,
+    num_results: args.num_results ?? 3,
     categories: args.categories,
     language: args.language,
-    page: 1,
+    max_content_length: 50000,
   });
   
-  // Limit the number of results to fetch
-  const numToFetch = Math.min(args.num_results ?? 3, 5);
-  const topResults = searchResponse.results.slice(0, numToFetch);
-  
-  // Fetch full content for each result
-  const fetchedResults = await Promise.all(
-    topResults.map(async (result) => {
-      try {
-        const content = await apiClient.fetchWebpage({
-          url: result.url,
-          include_links: false,
-          max_content_length: 10000, // Limit per-page content
-        });
-        
-        return {
-          url: result.url,
-          title: result.title,
-          search_snippet: result.content,
-          full_content: content.success ? content.content : '',
-          success: content.success,
-          error: content.error,
-        };
-      } catch (error) {
-        return {
-          url: result.url,
-          title: result.title,
-          search_snippet: result.content,
-          full_content: '',
-          success: false,
-          error: error instanceof Error ? error.message : 'Failed to fetch content',
-        };
-      }
-    })
-  );
-  
-  const result: SearchAndFetchResult = {
-    query: args.query,
-    results: fetchedResults,
-  };
-  
-  return formatSearchAndFetch(result);
+  return formatSearchAndFetch(response);
 }
 
 /**
