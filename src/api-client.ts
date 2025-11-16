@@ -17,7 +17,7 @@ export class ApiClient {
       baseURL: API_BASE_URL,
       timeout: 60000, // 60 seconds to handle cold starts
       headers: {
-        'User-Agent': 'MiyaMi-WebSearch-MCP/1.0.0',
+        'User-Agent': 'MiyaMi-WebSearch-MCP/1.1.0',
         'Content-Type': 'application/json',
       },
     });
@@ -31,15 +31,20 @@ export class ApiClient {
     categories?: string;
     language?: string;
     page?: number;
+    time_range?: 'day' | 'week' | 'month' | 'year';
   }): Promise<SearchResponse> {
     try {
       // Convert 'q' to 'query' for the API
-      const apiParams = {
+      const apiParams: Record<string, any> = {
         query: params.q,
         categories: params.categories,
         language: params.language,
         page: params.page,
       };
+      
+      if (params.time_range) {
+        apiParams.time_range = params.time_range;
+      }
       
       const response = await this.client.get<SearchResponse>('/search-api', {
         params: apiParams,
@@ -56,7 +61,10 @@ export class ApiClient {
   async fetchWebpage(params: {
     url: string;
     include_links?: boolean;
+    include_images?: boolean;
     max_content_length?: number;
+    format?: 'text' | 'markdown' | 'html';
+    extraction_mode?: 'trafilatura' | 'readability';
   }): Promise<FetchResponse> {
     try {
       const response = await this.client.get<FetchResponse>('/fetch', {
@@ -77,6 +85,8 @@ export class ApiClient {
     categories?: string;
     language?: string;
     max_content_length?: number;
+    time_range?: 'day' | 'week' | 'month' | 'year';
+    format?: 'text' | 'markdown' | 'html';
   }): Promise<SearchAndFetchResponse> {
     try {
       const response = await this.client.get<SearchAndFetchResponse>('/search-and-fetch', {

@@ -8,7 +8,10 @@
 ## 🌟 Features
 
 - 🔍 **Web Search** - Search across Google, DuckDuckGo, Bing, Brave, Wikipedia
-- 📄 **Content Extraction** - Get clean, readable content from any webpage
+- ⏰ **Time-Range Filters** - Filter results by recency (day, week, month, year) - NEW!
+- 📄 **Enhanced Content Extraction** - Trafilatura-powered (Firecrawl-quality) extraction
+- 📝 **Markdown Output** - Get structured markdown from webpages
+- 🎯 **Rich Metadata** - Automatically extract authors, dates, site names
 - ⚡ **Fast & Easy** - One-line installation, zero configuration
 - 🤖 **LLM Optimized** - Formatted responses perfect for AI consumption
 - 🆓 **100% Free** - No API keys, no signup, no configuration needed
@@ -70,43 +73,77 @@ Fetch the content from https://example.com and summarize it
 ## 🛠️ Available Tools
 
 ### 1. `web_search`
-Search the web using multiple search engines.
+Search the web using multiple search engines with optional time-range filtering.
 
 **Parameters:**
 - `query` (required) - Your search query
 - `categories` (optional) - general, news, images, videos, science
 - `language` (optional) - Language code (default: en)
 - `page` (optional) - Page number (default: 1)
+- `time_range` (optional) - **NEW!** Filter by recency: day, week, month, year
 
-**Example:**
+**Examples:**
 ```
 Search for "quantum computing breakthroughs" in news category
 ```
 
+```
+Search for AI news from the past 24 hours with time_range: day
+```
+
+```
+Find recent Python tutorials from the past week with time_range: week
+```
+
 ### 2. `fetch_webpage`
-Extract clean content from any webpage.
+Extract clean content from any webpage using **Trafilatura** (Firecrawl-quality extraction).
 
 **Parameters:**
 - `url` (required) - The webpage URL
 - `include_links` (optional) - Include links (default: true)
+- `include_images` (optional) - Include images (default: true)
 - `max_content_length` (optional) - Max length in characters (default: 50000)
+- `format` (optional) - **NEW!** Output format: text, markdown (default), html
+- `extraction_mode` (optional) - **NEW!** Engine: trafilatura (default, best quality), readability (faster)
+
+**Enhanced Features:**
+- 📝 **Markdown output** - Get structured markdown like Firecrawl
+- 🎯 **Rich metadata** - Authors, dates, site names automatically extracted
+- 📊 **Extraction stats** - Word count, content length, format info
 
 **Example:**
 ```
-Fetch and summarize https://en.wikipedia.org/wiki/Artificial_intelligence
+Fetch and summarize https://en.wikipedia.org/wiki/Artificial_intelligence in markdown format
 ```
 
-### 3. `search_and_fetch`
-Search and automatically fetch full content from top results.
+### 3. `search_and_fetch` ⭐ **RECOMMENDED**
+Search and automatically fetch full content from top results with Trafilatura-quality extraction.
 
 **Parameters:**
 - `query` (required) - Your search query
 - `num_results` (optional) - How many results to fetch (1-5, default: 3)
 - `categories` (optional) - Search categories
+- `time_range` (optional) - **NEW!** Filter by recency: day, week, month, year
+- `format` (optional) - **NEW!** Output format: text, markdown (default), html
 
-**Example:**
+**What it does:**
+- ✅ Searches for your query (with optional time filter)
+- ✅ Gets top N results
+- ✅ Automatically fetches full content (parallel)
+- ✅ Uses **Trafilatura** for Firecrawl-quality extraction
+- ✅ Returns both search snippets AND full webpage content
+
+**Examples:**
 ```
 Research "climate change solutions" and give me detailed info from top 3 sources
+```
+
+```
+Get recent AI breakthroughs from past 24 hours with full articles (time_range: day, num_results: 5)
+```
+
+```
+Research recent web development tutorials from past week (time_range: week, format: markdown)
 ```
 
 ## 💡 Usage Examples
@@ -117,21 +154,36 @@ Use search_and_fetch to research "artificial general intelligence latest develop
 from the top 3 results and give me a comprehensive summary
 ```
 
+### Get Recent News (Time-Range Filter)
+```
+Search for AI breakthroughs from the past 24 hours using time_range: day
+```
+
+### Recent Tutorials (Time-Range Filter)
+```
+Find Python tutorials from the past week using search with time_range: week
+```
+
+### Fetch with Markdown Output
+```
+Fetch this article in markdown format: https://example.com/article
+```
+
+### Research Recent Developments
+```
+Use search_and_fetch to research "quantum computing" from the past week 
+with time_range: week and get full article content in markdown
+```
+
 ### Find Specific Information
 ```
 Search for "best restaurants in Tokyo" and show me the top 5 results
 ```
 
-### Read an Article
-```
-Fetch the content from this URL and summarize the key points: 
-https://example.com/article
-```
-
 ### Multi-step Research
 ```
 1. Search for "Python web scraping libraries"
-2. Fetch the documentation page for the top result
+2. Fetch the documentation page in markdown format
 3. Explain how to use it with examples
 ```
 

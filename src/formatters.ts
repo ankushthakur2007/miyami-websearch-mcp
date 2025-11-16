@@ -13,15 +13,37 @@ export function formatSearchResults(response: SearchResponse): string {
   lines.push(`# Search Results for: "${response.query}"`);
   lines.push(`Found ${response.number_of_results} results\n`);
   
+  if (response.suggestions && response.suggestions.length > 0) {
+    lines.push(`**Suggestions:** ${response.suggestions.join(', ')}\n`);
+  }
+  
   response.results.forEach((result, index) => {
     lines.push(`## Result ${index + 1}: ${result.title}`);
     lines.push(`**URL:** ${result.url}`);
     if (result.engine) {
       lines.push(`**Source:** ${result.engine}`);
     }
+    if (result.score) {
+      lines.push(`**Score:** ${result.score}`);
+    }
     lines.push(`\n${result.content}\n`);
     lines.push('---\n');
   });
+  
+  if (response.infoboxes && response.infoboxes.length > 0) {
+    lines.push('\n## Infoboxes\n');
+    response.infoboxes.forEach((infobox, index) => {
+      lines.push(`### ${index + 1}. ${infobox.infobox}`);
+      lines.push(infobox.content);
+      if (infobox.urls && infobox.urls.length > 0) {
+        lines.push('\n**Related URLs:**');
+        infobox.urls.forEach(url => {
+          lines.push(`- [${url.title}](${url.url})`);
+        });
+      }
+      lines.push('');
+    });
+  }
   
   return lines.join('\n');
 }
@@ -33,9 +55,33 @@ export function formatWebpageContent(content: FetchResponse): string {
   const lines: string[] = [];
   
   lines.push(`# ${content.metadata.title || 'Webpage Content'}`);
-  lines.push(`**URL:** ${content.metadata.url}`);
-  lines.push(`**Status:** ${content.metadata.status_code}\n`);
-  lines.push('## Content\n');
+  lines.push(`**URL:** ${content.url || content.metadata.url}`);
+  lines.push(`**Status:** ${content.status_code || content.metadata.status_code}`);
+  
+  // Enhanced metadata
+  if (content.metadata.author) {
+    lines.push(`**Author:** ${content.metadata.author}`);
+  }
+  if (content.metadata.date) {
+    lines.push(`**Date:** ${content.metadata.date}`);
+  }
+  if (content.metadata.sitename) {
+    lines.push(`**Site:** ${content.metadata.sitename}`);
+  }
+  if (content.metadata.description) {
+    lines.push(`**Description:** ${content.metadata.description}`);
+  }
+  
+  // Stats
+  if (content.stats) {
+    lines.push(`\n**Extraction Stats:**`);
+    lines.push(`- Format: ${content.stats.format}`);
+    lines.push(`- Extraction Mode: ${content.stats.extraction_mode}`);
+    lines.push(`- Content Length: ${content.stats.content_length} characters`);
+    lines.push(`- Word Count: ${content.stats.word_count} words`);
+  }
+  
+  lines.push('\n## Content\n');
   lines.push(content.content);
   
   if (content.headings && content.headings.length > 0) {
@@ -43,6 +89,9 @@ export function formatWebpageContent(content: FetchResponse): string {
     content.headings.slice(0, 10).forEach((heading, index) => {
       lines.push(`${index + 1}. ${heading.level.toUpperCase()}: ${heading.text}`);
     });
+    if (content.headings.length > 10) {
+      lines.push(`\n... and ${content.headings.length - 10} more headings`);
+    }
   }
   
   if (content.links && content.links.length > 0) {
@@ -52,6 +101,16 @@ export function formatWebpageContent(content: FetchResponse): string {
     });
     if (content.links.length > 20) {
       lines.push(`\n... and ${content.links.length - 20} more links`);
+    }
+  }
+  
+  if (content.images && content.images.length > 0) {
+    lines.push('\n## Images Found\n');
+    content.images.slice(0, 10).forEach((img, index) => {
+      lines.push(`${index + 1}. ![${img.alt}](${img.src})`);
+    });
+    if (content.images.length > 10) {
+      lines.push(`\n... and ${content.images.length - 10} more images`);
     }
   }
   

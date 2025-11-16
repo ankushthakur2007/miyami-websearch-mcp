@@ -21,7 +21,7 @@ import { tools, handleWebSearch, handleFetchWebpage, handleSearchAndFetch } from
 const server = new Server(
   {
     name: 'miyami-websearch-mcp',
-    version: '1.0.0',
+    version: '1.1.0',
   },
   {
     capabilities: {
@@ -119,7 +119,7 @@ async function main() {
   
   // Log to stderr so it doesn't interfere with MCP protocol on stdout
   console.error('MiyaMi WebSearch MCP Server running on stdio');
-  console.error('Version: 1.0.0');
+  console.error('Version: 1.1.0');
   console.error('API: https://miyami-websearch-tool.onrender.com');
 }
 
