@@ -19,6 +19,7 @@ export const webSearchTool = {
     language: z.string().optional().describe('Language code (e.g., en, es, fr). Default: en'),
     page: z.number().optional().describe('Page number for pagination. Default: 1'),
     time_range: z.enum(['day', 'week', 'month', 'year']).optional().describe('Filter results by recency: day (past 24h), week (past week), month (past month), year (past year)'),
+    rerank: z.boolean().optional().describe('Enable AI semantic reranking for better search relevance. Default: false'),
   }),
 };
 
@@ -29,8 +30,9 @@ export async function handleWebSearch(args: z.infer<typeof webSearchTool.inputSc
     language: args.language,
     page: args.page,
     time_range: args.time_range,
+    rerank: args.rerank,
   });
-  
+
   return formatSearchResults(response);
 }
 
@@ -60,9 +62,9 @@ export async function handleFetchWebpage(args: z.infer<typeof fetchWebpageTool.i
     format: args.format ?? 'markdown',
     extraction_mode: args.extraction_mode ?? 'trafilatura',
   });
-  
+
   const formatted = formatWebpageContent(content);
-  
+
   // Truncate if needed
   const maxLength = args.max_content_length ?? 50000;
   return truncateContent(formatted, maxLength);
@@ -81,6 +83,7 @@ export const searchAndFetchTool = {
     categories: z.string().optional().describe('Search categories (comma-separated): general, news, images, videos, science. Default: general'),
     language: z.string().optional().describe('Language code (e.g., en, es, fr). Default: en'),
     time_range: z.enum(['day', 'week', 'month', 'year']).optional().describe('Filter results by recency: day (past 24h), week (past week), month (past month), year (past year)'),
+    rerank: z.boolean().optional().describe('Enable AI semantic reranking for better search relevance. Default: false'),
     format: z.enum(['text', 'markdown', 'html']).optional().describe('Output format: text, markdown (default), or html'),
   }),
 };
@@ -94,13 +97,45 @@ export async function handleSearchAndFetch(args: z.infer<typeof searchAndFetchTo
     language: args.language,
     max_content_length: 50000,
     time_range: args.time_range,
+    rerank: args.rerank,
     format: args.format ?? 'markdown',
   });
-  
+
   return formatSearchAndFetch(response);
 }
 
 /**
  * Export all tools
  */
-export const tools = [webSearchTool, fetchWebpageTool, searchAndFetchTool];
+/**
+ * Tool: deep_research
+ * Recursive research agent
+ */
+export const deepResearchTool = {
+  name: 'deep_research',
+  description: 'Perform deep recursive research on a topic. Searches, reads, extracts links, and recursively searches deeper to build a comprehensive report.',
+  inputSchema: z.object({
+    query: z.string().describe('The research topic'),
+    depth: z.number().optional().describe('Recursion depth (1-2). Default: 1'),
+    breadth: z.number().optional().describe('Number of results to process per level (2-5). Default: 3'),
+    time_range: z.enum(['day', 'week', 'month', 'year']).optional().describe('Filter results by recency'),
+    max_content_length: z.number().optional().describe('Max content length per page'),
+  }),
+};
+
+export async function handleDeepResearch(args: z.infer<typeof deepResearchTool.inputSchema>): Promise<string> {
+  const response = await apiClient.deepResearch({
+    query: args.query,
+    depth: args.depth,
+    breadth: args.breadth,
+    time_range: args.time_range,
+    max_content_length: args.max_content_length,
+  });
+
+  return JSON.stringify(response, null, 2);
+}
+
+/**
+ * Export all tools
+ */
+export const tools = [webSearchTool, fetchWebpageTool, searchAndFetchTool, deepResearchTool];

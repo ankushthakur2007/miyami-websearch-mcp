@@ -1,6 +1,6 @@
 {
   "name": "miyami-websearch-mcp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "MCP server providing web search and content extraction for LLMs",
   "main": "dist/index.js",
   "type": "module",

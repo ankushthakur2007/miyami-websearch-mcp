@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.2.0] - 2025-11-22
+
+### Added
+- **Semantic Reranking**: AI-powered reranking for better search relevance using FlashRank
+  - Added `rerank` parameter to `web_search` tool
+  - Added `rerank` parameter to `search_and_fetch` tool
+- **Deep Research Tool**: New `deep_research` tool for recursive research agent
+  - Searches, reads, extracts links, and recursively searches deeper
+  - Configurable depth (1-2) and breadth (2-5) parameters
+  - Supports time-range filtering
+- **Enhanced Type Definitions**: Updated TypeScript types to support new features
+
+### Changed
+- Updated API client to support `rerank` parameter
+- Updated tool handlers to pass `rerank` parameter to API
+- Improved error handling for new endpoints
+
 ## [1.1.0] - 2024-11-16
 
 ### Added

@@ -13,7 +13,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { tools, handleWebSearch, handleFetchWebpage, handleSearchAndFetch } from './tools.js';
+import { tools, handleWebSearch, handleFetchWebpage, handleSearchAndFetch, handleDeepResearch } from './tools.js';
 
 /**
  * Create and configure MCP server
@@ -44,11 +44,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           Object.entries(tool.inputSchema.shape).map(([key, value]) => [
             key,
             {
-              type: typeof value === 'object' && 'description' in value ? 
+              type: typeof value === 'object' && 'description' in value ?
                 (value as any)._def.innerType?._def.typeName === 'ZodNumber' ? 'number' :
-                (value as any)._def.innerType?._def.typeName === 'ZodBoolean' ? 'boolean' : 'string'
+                  (value as any)._def.innerType?._def.typeName === 'ZodBoolean' ? 'boolean' : 'string'
                 : (value as any)._def.typeName === 'ZodNumber' ? 'number' :
-                (value as any)._def.typeName === 'ZodBoolean' ? 'boolean' : 'string',
+                  (value as any)._def.typeName === 'ZodBoolean' ? 'boolean' : 'string',
               description: (value as any).description,
             },
           ])
@@ -83,6 +83,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         result = await handleSearchAndFetch(args as any);
         break;
 
+      case 'deep_research':
+        result = await handleDeepResearch(args as any);
+        break;
+
       default:
         throw new Error(`Unknown tool: ${name}`);
     }
@@ -97,7 +101,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    
+
     return {
       content: [
         {
@@ -116,7 +120,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  
+
   // Log to stderr so it doesn't interfere with MCP protocol on stdout
   console.error('MiyaMi WebSearch MCP Server running on stdio');
   console.error('Version: 1.1.0');

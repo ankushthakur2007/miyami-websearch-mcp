@@ -4,7 +4,7 @@
  */
 
 import axios, { AxiosInstance, AxiosError } from 'axios';
-import type { SearchResponse, FetchResponse, SearchAndFetchResponse, ApiError } from './types.js';
+import type { SearchResponse, FetchResponse, SearchAndFetchResponse, DeepResearchResponse, ApiError } from './types.js';
 
 // Hardcoded API URL - this is a free service, no configuration needed
 const API_BASE_URL = 'https://miyami-websearch-tool.onrender.com';
@@ -32,6 +32,7 @@ export class ApiClient {
     language?: string;
     page?: number;
     time_range?: 'day' | 'week' | 'month' | 'year';
+    rerank?: boolean;
   }): Promise<SearchResponse> {
     try {
       // Convert 'q' to 'query' for the API
@@ -41,11 +42,15 @@ export class ApiClient {
         language: params.language,
         page: params.page,
       };
-      
+
       if (params.time_range) {
         apiParams.time_range = params.time_range;
       }
-      
+
+      if (params.rerank) {
+        apiParams.rerank = params.rerank;
+      }
+
       const response = await this.client.get<SearchResponse>('/search-api', {
         params: apiParams,
       });
@@ -86,15 +91,39 @@ export class ApiClient {
     language?: string;
     max_content_length?: number;
     time_range?: 'day' | 'week' | 'month' | 'year';
+    rerank?: boolean;
     format?: 'text' | 'markdown' | 'html';
   }): Promise<SearchAndFetchResponse> {
     try {
       const response = await this.client.get<SearchAndFetchResponse>('/search-and-fetch', {
-        params,
+        params: {
+          ...params,
+          rerank: params.rerank,
+        },
       });
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'search-and-fetch');
+    }
+  }
+
+  /**
+   * Deep Research - Recursive research agent
+   */
+  async deepResearch(params: {
+    query: string;
+    depth?: number;
+    breadth?: number;
+    time_range?: 'day' | 'week' | 'month' | 'year';
+    max_content_length?: number;
+  }): Promise<DeepResearchResponse> {
+    try {
+      const response = await this.client.get<DeepResearchResponse>('/deep-research', {
+        params,
+      });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error, 'deep-research');
     }
   }
 
@@ -104,7 +133,7 @@ export class ApiClient {
   private handleError(error: unknown, operation: string): Error {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError<ApiError>;
-      
+
       if (axiosError.code === 'ECONNABORTED' || axiosError.code === 'ETIMEDOUT') {
         return new Error(
           `Request timeout during ${operation}. The API may be waking up from sleep (Render free tier). ` +
@@ -115,7 +144,7 @@ export class ApiClient {
       if (axiosError.response) {
         const status = axiosError.response.status;
         const data = axiosError.response.data;
-        
+
         if (status >= 500) {
           return new Error(
             `API server error during ${operation}. The service may be restarting. ` +
@@ -123,15 +152,15 @@ export class ApiClient {
             `Error: ${data?.error || axiosError.message}`
           );
         }
-        
+
         if (status === 404) {
           return new Error(`Resource not found during ${operation}`);
         }
-        
+
         if (status === 400) {
           return new Error(`Invalid request: ${data?.error || axiosError.message}`);
         }
-        
+
         return new Error(data?.error || axiosError.message);
       }
 

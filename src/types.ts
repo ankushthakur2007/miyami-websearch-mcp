@@ -86,6 +86,8 @@ export interface SearchAndFetchResponse {
   suggestions?: string[];
 }
 
+export type DeepResearchResponse = SearchAndFetchResponse;
+
 export interface ApiError {
   error: string;
   details?: string;
