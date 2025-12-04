@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.3.0] - 2025-12-04
+
+### Changed
+- **BREAKING: Deep Research Tool Redesigned**: Complete overhaul of `deep_research` tool
+  - **Parameter changes:**
+    - `query` → `queries`: Now accepts comma-separated list of queries (max 10)
+    - `depth` parameter **REMOVED**: No longer uses recursive depth
+    - New `include_suggestions` parameter to toggle search suggestions
+  - **New features:**
+    - Process multiple queries in parallel for faster research
+    - AI reranking always enabled for better relevance
+    - Auto-generated markdown report (`compiled_report` field)
+    - 30-minute server-side caching for repeated queries
+    - Rich metadata extraction (author, date, sitename)
+    - Aggregated statistics across all queries
+  - **Response structure:**
+    - New `research_summary` with aggregated stats
+    - New `compiled_report` with formatted markdown
+    - New `all_suggestions` with deduplicated suggestions
+    - `query_results` array with per-query results
+
+### Fixed
+- Updated TypeScript types for new DeepResearchResponse structure
+
 ## [1.2.0] - 2025-11-22
 
 ### Added

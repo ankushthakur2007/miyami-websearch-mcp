@@ -109,29 +109,33 @@ export async function handleSearchAndFetch(args: z.infer<typeof searchAndFetchTo
  */
 /**
  * Tool: deep_research
- * Recursive research agent
+ * Multi-query parallel research agent with compiled reports
  */
 export const deepResearchTool = {
   name: 'deep_research',
-  description: 'Perform deep recursive research on a topic. Searches, reads, extracts links, and recursively searches deeper to build a comprehensive report.',
+  description: 'Perform deep parallel research on multiple topics at once. Processes up to 10 comma-separated queries in parallel, fetches and reranks content with AI, and generates a compiled markdown report. Perfect for comprehensive research across multiple related topics.',
   inputSchema: z.object({
-    query: z.string().describe('The research topic'),
-    depth: z.number().optional().describe('Recursion depth (1-2). Default: 1'),
-    breadth: z.number().optional().describe('Number of results to process per level (2-5). Default: 3'),
-    time_range: z.enum(['day', 'week', 'month', 'year']).optional().describe('Filter results by recency'),
-    max_content_length: z.number().optional().describe('Max content length per page'),
+    queries: z.string().describe('Comma-separated list of research queries (max 10). Example: "AI trends 2024,machine learning basics,ChatGPT use cases"'),
+    breadth: z.number().optional().describe('Number of results to fetch per query (1-5). Default: 3'),
+    time_range: z.enum(['day', 'week', 'month', 'year']).optional().describe('Filter results by recency: day, week, month, year'),
+    max_content_length: z.number().optional().describe('Max content length per result. Default: 30000'),
+    include_suggestions: z.boolean().optional().describe('Include search suggestions in response. Default: true'),
   }),
 };
 
 export async function handleDeepResearch(args: z.infer<typeof deepResearchTool.inputSchema>): Promise<string> {
   const response = await apiClient.deepResearch({
-    query: args.query,
-    depth: args.depth,
+    queries: args.queries,
     breadth: args.breadth,
     time_range: args.time_range,
     max_content_length: args.max_content_length,
+    include_suggestions: args.include_suggestions,
   });
 
+  // Return the compiled report if available, otherwise JSON
+  if (response.compiled_report) {
+    return response.compiled_report;
+  }
   return JSON.stringify(response, null, 2);
 }
 

@@ -86,7 +86,48 @@ export interface SearchAndFetchResponse {
   suggestions?: string[];
 }
 
-export type DeepResearchResponse = SearchAndFetchResponse;
+export interface DeepResearchQueryResult {
+  query: string;
+  status: 'success' | 'error';
+  num_results: number;
+  successful_fetches: number;
+  results: Array<{
+    search_result: {
+      title: string;
+      url: string;
+      snippet: string;
+      engine?: string;
+      score?: number;
+    };
+    fetch_status: 'success' | 'failed';
+    fetched_content?: {
+      title: string;
+      content: string;
+      author?: string;
+      date?: string;
+      sitename?: string;
+      content_length: number;
+    };
+    error?: string;
+  }>;
+  suggestions?: string[];
+}
+
+export interface DeepResearchResponse {
+  research_summary: {
+    total_queries: number;
+    successful_queries: number;
+    failed_queries: number;
+    total_results_found: number;
+    total_successful_fetches: number;
+    time_range_filter?: string;
+    breadth_per_query: number;
+  };
+  queries: string[];
+  query_results: DeepResearchQueryResult[];
+  compiled_report: string;
+  all_suggestions: string[];
+}
 
 export interface ApiError {
   error: string;

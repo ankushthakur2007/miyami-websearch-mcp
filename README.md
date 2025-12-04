@@ -8,7 +8,8 @@
 ## 🌟 Features
 
 - 🔍 **Web Search** - Search across Google, DuckDuckGo, Bing, Brave, Wikipedia
-- ⏰ **Time-Range Filters** - Filter results by recency (day, week, month, year) - NEW!
+- 🧠 **Deep Research** - Multi-query parallel research with compiled reports - NEW!
+- ⏰ **Time-Range Filters** - Filter results by recency (day, week, month, year)
 - 📄 **Enhanced Content Extraction** - Trafilatura-powered (Firecrawl-quality) extraction
 - 📝 **Markdown Output** - Get structured markdown from webpages
 - 🎯 **Rich Metadata** - Automatically extract authors, dates, site names
@@ -144,6 +145,37 @@ Get recent AI breakthroughs from past 24 hours with full articles (time_range: d
 
 ```
 Research recent web development tutorials from past week (time_range: week, format: markdown)
+```
+
+### 4. `deep_research` 🧠 **NEW!**
+Perform comprehensive parallel research across multiple topics at once with AI-powered reranking and compiled markdown reports.
+
+**Parameters:**
+- `queries` (required) - Comma-separated list of research queries (max 10)
+- `breadth` (optional) - Results to fetch per query (1-5, default: 3)
+- `time_range` (optional) - Filter by recency: day, week, month, year
+- `max_content_length` (optional) - Max content per result (default: 30000)
+- `include_suggestions` (optional) - Include search suggestions (default: true)
+
+**What it does:**
+- ✅ Process up to 10 queries in **parallel** for speed
+- ✅ AI reranking for better relevance (always enabled)
+- ✅ Auto-generates compiled **markdown report**
+- ✅ Rich metadata extraction (author, date, source)
+- ✅ Server-side caching (30 minutes)
+- ✅ Aggregated statistics across all queries
+
+**Examples:**
+```
+Research "AI trends 2024,machine learning basics,ChatGPT use cases" with deep_research
+```
+
+```
+Deep research on "React vs Vue,Next.js features,frontend trends" from past month
+```
+
+```
+Comprehensive research: "climate solutions,renewable energy,carbon capture" with breadth: 5
 ```
 
 ## 💡 Usage Examples

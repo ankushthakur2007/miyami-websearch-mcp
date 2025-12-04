@@ -108,14 +108,14 @@ export class ApiClient {
   }
 
   /**
-   * Deep Research - Recursive research agent
+   * Deep Research - Multi-query parallel research agent
    */
   async deepResearch(params: {
-    query: string;
-    depth?: number;
+    queries: string;
     breadth?: number;
     time_range?: 'day' | 'week' | 'month' | 'year';
     max_content_length?: number;
+    include_suggestions?: boolean;
   }): Promise<DeepResearchResponse> {
     try {
       const response = await this.client.get<DeepResearchResponse>('/deep-research', {
