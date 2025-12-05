@@ -1,6 +1,6 @@
 # MiyaMi WebSearch MCP
 
-[![npm version](https://badge.fury.io/js/miyami-websearch-mcp.svg)](https://www.npmjs.com/package/miyami-websearch-mcp)
+[![npm version](https://badge.fury.io/js/miyami-websearch-mcp.svg)](https://www.npmjs.com/package/miyami-websearch-mcp/v/1.4.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > Connect your LLM to the internet! Search the web and extract content from any webpage using the Model Context Protocol.
