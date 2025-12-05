@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.4.0] - 2025-12-05
+
+### Added
+- **FREE Stealth Mode**: Anti-bot bypass for protected websites
+  - `stealth_mode` parameter: off, low, medium, high
+  - `auto_bypass` parameter: automatically escalate stealth levels if bot protection detected
+  - Available on `fetch_webpage`, `search_and_fetch`, and `deep_research` tools
+  - Detects Cloudflare, reCAPTCHA, hCaptcha, DataDome, Akamai, PerimeterX, Imperva, Kasada
+
+### Changed
+- **New API URL**: Migrated from `miyami-websearch-tool.onrender.com` to `websearch.miyami.tech`
+- Removed `include_suggestions` parameter from `deep_research` (suggestions still included in response)
+
+### Removed
+- **JS Rendering removed from backend**: Paid services (ScrapingBee, Browserless) removed to keep tool 100% FREE
+  - Stealth mode provides equivalent anti-bot bypass functionality for free
+
 ## [1.3.0] - 2025-12-04
 
 ### Changed

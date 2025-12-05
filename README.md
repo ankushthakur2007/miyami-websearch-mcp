@@ -8,7 +8,8 @@
 ## 🌟 Features
 
 - 🔍 **Web Search** - Search across Google, DuckDuckGo, Bing, Brave, Wikipedia
-- 🧠 **Deep Research** - Multi-query parallel research with compiled reports - NEW!
+- 🧠 **Deep Research** - Multi-query parallel research with compiled reports
+- 🛡️ **FREE Stealth Mode** - Anti-bot bypass (Cloudflare, DataDome, etc.) - NEW!
 - ⏰ **Time-Range Filters** - Filter results by recency (day, week, month, year)
 - 📄 **Enhanced Content Extraction** - Trafilatura-powered (Firecrawl-quality) extraction
 - 📝 **Markdown Output** - Get structured markdown from webpages
@@ -104,13 +105,16 @@ Extract clean content from any webpage using **Trafilatura** (Firecrawl-quality 
 - `include_links` (optional) - Include links (default: true)
 - `include_images` (optional) - Include images (default: true)
 - `max_content_length` (optional) - Max length in characters (default: 50000)
-- `format` (optional) - **NEW!** Output format: text, markdown (default), html
-- `extraction_mode` (optional) - **NEW!** Engine: trafilatura (default, best quality), readability (faster)
+- `format` (optional) - Output format: text, markdown (default), html
+- `extraction_mode` (optional) - Engine: trafilatura (default, best quality), readability (faster)
+- `stealth_mode` (optional) - **NEW!** Anti-bot bypass: off, low, medium, high (default: off)
+- `auto_bypass` (optional) - **NEW!** Auto-escalate stealth if bot protection detected (default: false)
 
 **Enhanced Features:**
 - 📝 **Markdown output** - Get structured markdown like Firecrawl
 - 🎯 **Rich metadata** - Authors, dates, site names automatically extracted
 - 📊 **Extraction stats** - Word count, content length, format info
+- 🛡️ **Stealth mode** - Bypass Cloudflare, DataDome, Akamai, etc.
 
 **Example:**
 ```
@@ -124,8 +128,10 @@ Search and automatically fetch full content from top results with Trafilatura-qu
 - `query` (required) - Your search query
 - `num_results` (optional) - How many results to fetch (1-5, default: 3)
 - `categories` (optional) - Search categories
-- `time_range` (optional) - **NEW!** Filter by recency: day, week, month, year
-- `format` (optional) - **NEW!** Output format: text, markdown (default), html
+- `time_range` (optional) - Filter by recency: day, week, month, year
+- `format` (optional) - Output format: text, markdown (default), html
+- `stealth_mode` (optional) - **NEW!** Anti-bot bypass: off, low, medium, high (default: off)
+- `auto_bypass` (optional) - **NEW!** Auto-escalate stealth if bot protection detected (default: false)
 
 **What it does:**
 - ✅ Searches for your query (with optional time filter)
@@ -133,6 +139,7 @@ Search and automatically fetch full content from top results with Trafilatura-qu
 - ✅ Automatically fetches full content (parallel)
 - ✅ Uses **Trafilatura** for Firecrawl-quality extraction
 - ✅ Returns both search snippets AND full webpage content
+- ✅ FREE stealth mode for protected sites
 
 **Examples:**
 ```
@@ -147,7 +154,7 @@ Get recent AI breakthroughs from past 24 hours with full articles (time_range: d
 Research recent web development tutorials from past week (time_range: week, format: markdown)
 ```
 
-### 4. `deep_research` 🧠 **NEW!**
+### 4. `deep_research` 🧠
 Perform comprehensive parallel research across multiple topics at once with AI-powered reranking and compiled markdown reports.
 
 **Parameters:**
@@ -155,7 +162,8 @@ Perform comprehensive parallel research across multiple topics at once with AI-p
 - `breadth` (optional) - Results to fetch per query (1-5, default: 3)
 - `time_range` (optional) - Filter by recency: day, week, month, year
 - `max_content_length` (optional) - Max content per result (default: 30000)
-- `include_suggestions` (optional) - Include search suggestions (default: true)
+- `stealth_mode` (optional) - **NEW!** Anti-bot bypass: off, low, medium, high (default: off)
+- `auto_bypass` (optional) - **NEW!** Auto-escalate stealth if bot protection detected (default: false)
 
 **What it does:**
 - ✅ Process up to 10 queries in **parallel** for speed
@@ -164,6 +172,7 @@ Perform comprehensive parallel research across multiple topics at once with AI-p
 - ✅ Rich metadata extraction (author, date, source)
 - ✅ Server-side caching (30 minutes)
 - ✅ Aggregated statistics across all queries
+- ✅ FREE stealth mode for protected sites
 
 **Examples:**
 ```
@@ -251,14 +260,12 @@ The backend API is on Render free tier and may be waking up. Wait 60 seconds and
 
 ## 📡 API Backend
 
-This MCP server connects to a free public SearXNG API:
-- **URL**: https://miyami-websearch-tool.onrender.com (hardcoded, no config needed)
+This MCP server connects to a free public API:
+- **URL**: https://websearch.miyami.tech (hardcoded, no config needed)
 - **Cost**: 100% Free - no API keys or signup required
 - **Privacy**: No logging, no tracking, no data collection
 - **Engines**: Google, DuckDuckGo, Bing, Brave, Wikipedia, Startpage
-- **Hosting**: Render.com free tier (may have 30-60s cold starts after inactivity)
-
-**Note:** First search after inactivity may take 30-60 seconds while the service wakes up. This is normal for the free tier!
+- **Stealth Mode**: FREE anti-bot bypass (Cloudflare, DataDome, Akamai, etc.)
 
 ## 🤝 Contributing
 

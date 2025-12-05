@@ -1,13 +1,13 @@
 /**
  * HTTP client for MiyaMi WebSearch API
- * Hardcoded to use the free public API at Render.com
+ * Hardcoded to use the free public API
  */
 
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import type { SearchResponse, FetchResponse, SearchAndFetchResponse, DeepResearchResponse, ApiError } from './types.js';
 
 // Hardcoded API URL - this is a free service, no configuration needed
-const API_BASE_URL = 'https://miyami-websearch-tool.onrender.com';
+const API_BASE_URL = 'https://websearch.miyami.tech';
 
 export class ApiClient {
   private client: AxiosInstance;
@@ -17,7 +17,7 @@ export class ApiClient {
       baseURL: API_BASE_URL,
       timeout: 60000, // 60 seconds to handle cold starts
       headers: {
-        'User-Agent': 'MiyaMi-WebSearch-MCP/1.1.0',
+        'User-Agent': 'MiyaMi-WebSearch-MCP/1.4.0',
         'Content-Type': 'application/json',
       },
     });
@@ -70,6 +70,8 @@ export class ApiClient {
     max_content_length?: number;
     format?: 'text' | 'markdown' | 'html';
     extraction_mode?: 'trafilatura' | 'readability';
+    stealth_mode?: 'off' | 'low' | 'medium' | 'high';
+    auto_bypass?: boolean;
   }): Promise<FetchResponse> {
     try {
       const response = await this.client.get<FetchResponse>('/fetch', {
@@ -93,6 +95,8 @@ export class ApiClient {
     time_range?: 'day' | 'week' | 'month' | 'year';
     rerank?: boolean;
     format?: 'text' | 'markdown' | 'html';
+    stealth_mode?: 'off' | 'low' | 'medium' | 'high';
+    auto_bypass?: boolean;
   }): Promise<SearchAndFetchResponse> {
     try {
       const response = await this.client.get<SearchAndFetchResponse>('/search-and-fetch', {
@@ -115,7 +119,8 @@ export class ApiClient {
     breadth?: number;
     time_range?: 'day' | 'week' | 'month' | 'year';
     max_content_length?: number;
-    include_suggestions?: boolean;
+    stealth_mode?: 'off' | 'low' | 'medium' | 'high';
+    auto_bypass?: boolean;
   }): Promise<DeepResearchResponse> {
     try {
       const response = await this.client.get<DeepResearchResponse>('/deep-research', {

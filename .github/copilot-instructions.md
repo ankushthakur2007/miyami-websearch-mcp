@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a **Model Context Protocol (MCP) server** providing web search and content extraction tools for LLMs. Connects to free public SearXNG API at `https://miyami-websearch-tool.onrender.com`.
+This is a **Model Context Protocol (MCP) server** providing web search and content extraction tools for LLMs. Connects to free public API at `https://websearch.miyami.tech`.
 
 ## Architecture
 
@@ -22,9 +22,17 @@ src/
 | Tool | Endpoint | Purpose |
 |------|----------|---------|
 | `web_search` | `/search-api` | Multi-engine search with time filtering |
-| `fetch_webpage` | `/fetch` | Extract content from URLs (Trafilatura) |
-| `search_and_fetch` | `/search-and-fetch` | Search + auto-fetch top results |
-| `deep_research` | `/deep-research` | Multi-query parallel research with compiled reports |
+| `fetch_webpage` | `/fetch` | Extract content from URLs (Trafilatura) + stealth mode |
+| `search_and_fetch` | `/search-and-fetch` | Search + auto-fetch top results + stealth mode |
+| `deep_research` | `/deep-research` | Multi-query parallel research with compiled reports + stealth mode |
+
+## FREE Stealth Mode (Anti-Bot Bypass)
+
+All fetch tools support FREE stealth mode parameters:
+- `stealth_mode`: off | low | medium | high
+- `auto_bypass`: boolean - auto-escalate if bot protection detected
+
+Detects: Cloudflare, reCAPTCHA, hCaptcha, DataDome, Akamai, PerimeterX, Imperva, Kasada
 
 ## Key Patterns
 
@@ -44,9 +52,9 @@ export async function handleMyTool(args: z.infer<typeof myTool.inputSchema>): Pr
 ```
 
 ### API Client Pattern (`api-client.ts`)
-- Singleton `apiClient` instance with 60-second timeout (handles Render cold starts)
+- Singleton `apiClient` instance with 60-second timeout
 - All API calls use **GET requests** with query parameters
-- Error handler wraps axios errors with user-friendly messages mentioning cold starts
+- Error handler wraps axios errors with user-friendly messages
 
 ### Response Formatting (`formatters.ts`)
 - Return **Markdown strings** optimized for LLM consumption
@@ -68,6 +76,7 @@ npm run build    # Compile TypeScript → dist/ (includes chmod +x)
 3. **Zod `.describe()`** → Every schema field needs description for LLM documentation
 4. **Handlers return strings** → Never return raw objects; format or JSON.stringify
 5. **Zero-config design** → API URL hardcoded; no env vars or config files
+6. **100% FREE** → No paid API keys required; stealth mode replaces JS rendering
 
 ## Adding a New Tool
 

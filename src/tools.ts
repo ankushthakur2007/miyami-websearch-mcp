@@ -42,7 +42,7 @@ export async function handleWebSearch(args: z.infer<typeof webSearchTool.inputSc
  */
 export const fetchWebpageTool = {
   name: 'fetch_webpage',
-  description: 'Fetch and extract clean, readable content from any webpage using Trafilatura (Firecrawl-quality extraction). Supports markdown, text, or HTML output. Removes ads, navigation, and clutter.',
+  description: 'Fetch and extract clean, readable content from any webpage using Trafilatura (Firecrawl-quality extraction). Supports markdown, text, or HTML output. Removes ads, navigation, and clutter. Includes FREE stealth mode for anti-bot bypass.',
   inputSchema: z.object({
     url: z.string().describe('The URL of the webpage to fetch'),
     include_links: z.boolean().optional().describe('Include links found in the content. Default: true'),
@@ -50,6 +50,8 @@ export const fetchWebpageTool = {
     max_content_length: z.number().optional().describe('Maximum content length in characters. Default: 50000'),
     format: z.enum(['text', 'markdown', 'html']).optional().describe('Output format: text (clean text), markdown (structured markdown), html (raw HTML). Default: markdown'),
     extraction_mode: z.enum(['trafilatura', 'readability']).optional().describe('Extraction engine: trafilatura (best quality), readability (faster). Default: trafilatura'),
+    stealth_mode: z.enum(['off', 'low', 'medium', 'high']).optional().describe('Anti-bot bypass level: off (standard), low (User-Agent rotation), medium (+ header randomization), high (+ TLS fingerprinting). Default: off'),
+    auto_bypass: z.boolean().optional().describe('Automatically escalate stealth levels if bot protection detected. Default: false'),
   }),
 };
 
@@ -61,6 +63,8 @@ export async function handleFetchWebpage(args: z.infer<typeof fetchWebpageTool.i
     max_content_length: args.max_content_length ?? 50000,
     format: args.format ?? 'markdown',
     extraction_mode: args.extraction_mode ?? 'trafilatura',
+    stealth_mode: args.stealth_mode,
+    auto_bypass: args.auto_bypass,
   });
 
   const formatted = formatWebpageContent(content);
@@ -76,7 +80,7 @@ export async function handleFetchWebpage(args: z.infer<typeof fetchWebpageTool.i
  */
 export const searchAndFetchTool = {
   name: 'search_and_fetch',
-  description: 'Search the web and automatically fetch full content from top results using Trafilatura (Firecrawl-quality). Perfect for research - combines search + content extraction with time-range filtering and markdown output.',
+  description: 'Search the web and automatically fetch full content from top results using Trafilatura (Firecrawl-quality). Perfect for research - combines search + content extraction with time-range filtering, markdown output, and FREE stealth mode for anti-bot bypass.',
   inputSchema: z.object({
     query: z.string().describe('The search query'),
     num_results: z.number().optional().describe('Number of top results to fetch full content for (1-5). Default: 3'),
@@ -85,6 +89,8 @@ export const searchAndFetchTool = {
     time_range: z.enum(['day', 'week', 'month', 'year']).optional().describe('Filter results by recency: day (past 24h), week (past week), month (past month), year (past year)'),
     rerank: z.boolean().optional().describe('Enable AI semantic reranking for better search relevance. Default: false'),
     format: z.enum(['text', 'markdown', 'html']).optional().describe('Output format: text, markdown (default), or html'),
+    stealth_mode: z.enum(['off', 'low', 'medium', 'high']).optional().describe('Anti-bot bypass level: off (standard), low (User-Agent rotation), medium (+ header randomization), high (+ TLS fingerprinting). Default: off'),
+    auto_bypass: z.boolean().optional().describe('Automatically escalate stealth levels if bot protection detected. Default: false'),
   }),
 };
 
@@ -99,6 +105,8 @@ export async function handleSearchAndFetch(args: z.infer<typeof searchAndFetchTo
     time_range: args.time_range,
     rerank: args.rerank,
     format: args.format ?? 'markdown',
+    stealth_mode: args.stealth_mode,
+    auto_bypass: args.auto_bypass,
   });
 
   return formatSearchAndFetch(response);
@@ -113,13 +121,14 @@ export async function handleSearchAndFetch(args: z.infer<typeof searchAndFetchTo
  */
 export const deepResearchTool = {
   name: 'deep_research',
-  description: 'Perform deep parallel research on multiple topics at once. Processes up to 10 comma-separated queries in parallel, fetches and reranks content with AI, and generates a compiled markdown report. Perfect for comprehensive research across multiple related topics.',
+  description: 'Perform deep parallel research on multiple topics at once. Processes up to 10 comma-separated queries in parallel, fetches and reranks content with AI, and generates a compiled markdown report. Includes FREE stealth mode for anti-bot bypass. Perfect for comprehensive research across multiple related topics.',
   inputSchema: z.object({
     queries: z.string().describe('Comma-separated list of research queries (max 10). Example: "AI trends 2024,machine learning basics,ChatGPT use cases"'),
     breadth: z.number().optional().describe('Number of results to fetch per query (1-5). Default: 3'),
     time_range: z.enum(['day', 'week', 'month', 'year']).optional().describe('Filter results by recency: day, week, month, year'),
     max_content_length: z.number().optional().describe('Max content length per result. Default: 30000'),
-    include_suggestions: z.boolean().optional().describe('Include search suggestions in response. Default: true'),
+    stealth_mode: z.enum(['off', 'low', 'medium', 'high']).optional().describe('Anti-bot bypass level: off (standard), low (User-Agent rotation), medium (+ header randomization), high (+ TLS fingerprinting). Default: off'),
+    auto_bypass: z.boolean().optional().describe('Automatically escalate stealth levels if bot protection detected. Default: false'),
   }),
 };
 
@@ -129,7 +138,8 @@ export async function handleDeepResearch(args: z.infer<typeof deepResearchTool.i
     breadth: args.breadth,
     time_range: args.time_range,
     max_content_length: args.max_content_length,
-    include_suggestions: args.include_suggestions,
+    stealth_mode: args.stealth_mode,
+    auto_bypass: args.auto_bypass,
   });
 
   // Return the compiled report if available, otherwise JSON
