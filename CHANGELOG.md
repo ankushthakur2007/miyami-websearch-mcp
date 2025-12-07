@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.0] - 2025-12-07
+
+### Added
+- **crawl_site Tool**: Depth-limited Scrapy crawler with Trafilatura extraction
+  - Parameters: start_url, max_pages (1-200), max_depth (0-5), format (text/markdown/html), include_links, include_images, url_patterns, exclude_patterns, stealth_mode, obey_robots
+  - Returns structured pages with metadata, word counts, links/images, and crawl summary
+  - 15-minute timeout, DiskCache (30m) keyed on params
+- **Stealth Mode for crawl_site**: off/low/medium/high anti-bot bypass with auto escalation (server-side)
+
+### Changed
+- Bumped MCP package to v1.5.0 and updated User-Agent
+
 ## [1.4.0] - 2025-12-05
 
 ### Added

@@ -2,7 +2,7 @@
  * Response formatting utilities for LLM consumption
  */
 
-import type { SearchResponse, FetchResponse, SearchAndFetchResponse } from './types.js';
+import type { SearchResponse, FetchResponse, SearchAndFetchResponse, CrawlSiteResponse } from './types.js';
 
 /**
  * Format search results for LLM consumption
@@ -164,6 +164,61 @@ export function formatSearchAndFetch(result: SearchAndFetchResponse): string {
     lines.push('\n---\n');
   });
   
+  return lines.join('\n');
+}
+
+/**
+ * Format crawl-site results for LLM consumption
+ */
+export function formatCrawlSite(response: CrawlSiteResponse): string {
+  const lines: string[] = [];
+
+  lines.push(`# Crawl Results`);
+  lines.push(`**Start URL:** ${response.crawl_summary.start_url}`);
+  lines.push(`**Pages Crawled:** ${response.crawl_summary.pages_crawled}/${response.crawl_summary.max_pages_requested}`);
+  lines.push(`**Max Depth:** ${response.crawl_summary.max_depth}`);
+  lines.push(`**Format:** ${response.crawl_summary.format}`);
+  lines.push(`**Stealth Mode:** ${response.crawl_summary.stealth_mode}`);
+  lines.push(`**Total Words:** ${response.total_words}\n`);
+
+  response.pages.forEach((page, index) => {
+    lines.push(`## Page ${index + 1}: ${page.metadata.title || page.url}`);
+    lines.push(`**URL:** ${page.url}`);
+    lines.push(`**Status:** ${page.status_code} | **Depth:** ${page.depth} | **Words:** ${page.word_count}`);
+    if (page.metadata.sitename || page.metadata.author || page.metadata.date) {
+      const meta: string[] = [];
+      if (page.metadata.sitename) meta.push(`Site: ${page.metadata.sitename}`);
+      if (page.metadata.author) meta.push(`Author: ${page.metadata.author}`);
+      if (page.metadata.date) meta.push(`Date: ${page.metadata.date}`);
+      if (meta.length) lines.push(`**Metadata:** ${meta.join(' | ')}`);
+    }
+
+    const content = truncateContent(page.content, 2000);
+    lines.push(`\n${content}\n`);
+
+    if (page.links && page.links.length > 0) {
+      lines.push(`**Links (showing up to 10):**`);
+      page.links.slice(0, 10).forEach((link, i) => {
+        lines.push(`- ${i + 1}. ${link.url}`);
+      });
+      if (page.links.length > 10) {
+        lines.push(`...and ${page.links.length - 10} more links`);
+      }
+    }
+
+    if (page.images && page.images.length > 0) {
+      lines.push(`**Images (showing up to 5):**`);
+      page.images.slice(0, 5).forEach((img, i) => {
+        lines.push(`- ${i + 1}. ${img.src}`);
+      });
+      if (page.images.length > 5) {
+        lines.push(`...and ${page.images.length - 5} more images`);
+      }
+    }
+
+    lines.push('\n---\n');
+  });
+
   return lines.join('\n');
 }
 

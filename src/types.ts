@@ -129,6 +129,36 @@ export interface DeepResearchResponse {
   all_suggestions: string[];
 }
 
+export interface CrawlPage {
+  url: string;
+  status_code: number;
+  depth: number;
+  metadata: {
+    title: string | null;
+    author: string | null;
+    date: string | null;
+    sitename: string | null;
+  };
+  content: string;
+  word_count: number;
+  format: string;
+  links?: Array<{ text?: string; url: string }>;
+  images?: Array<{ src: string; alt?: string }>;
+}
+
+export interface CrawlSiteResponse {
+  crawl_summary: {
+    start_url: string;
+    pages_crawled: number;
+    max_pages_requested: number;
+    max_depth: number;
+    format: string;
+    stealth_mode: string;
+  };
+  pages: CrawlPage[];
+  total_words: number;
+}
+
 export interface ApiError {
   error: string;
   details?: string;

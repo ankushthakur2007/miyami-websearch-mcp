@@ -4,7 +4,7 @@
 
 import { z } from 'zod';
 import { apiClient } from './api-client.js';
-import { formatSearchResults, formatWebpageContent, formatSearchAndFetch, truncateContent } from './formatters.js';
+import { formatSearchResults, formatWebpageContent, formatSearchAndFetch, formatCrawlSite, truncateContent } from './formatters.js';
 
 /**
  * Tool: web_search
@@ -150,6 +150,44 @@ export async function handleDeepResearch(args: z.infer<typeof deepResearchTool.i
 }
 
 /**
+ * Tool: crawl_site
+ * Depth-limited site crawler with Trafilatura extraction
+ */
+export const crawlSiteTool = {
+  name: 'crawl_site',
+  description: 'Crawl a site starting from a URL using Scrapy, extract clean content with Trafilatura, and return structured results with metadata, word counts, and links. Supports depth limits, page limits, include/exclude patterns, robots.txt toggle, and FREE stealth mode for anti-bot bypass.',
+  inputSchema: z.object({
+    start_url: z.string().describe('Starting URL to crawl'),
+    max_pages: z.number().optional().describe('Maximum pages to crawl (1-200). Default: 50'),
+    max_depth: z.number().optional().describe('Maximum link depth (0-5). Default: 2'),
+    format: z.enum(['text', 'markdown', 'html']).optional().describe('Output format: text, markdown (default), html'),
+    include_links: z.boolean().optional().describe('Include extracted links. Default: true'),
+    include_images: z.boolean().optional().describe('Include image URLs. Default: true'),
+    url_patterns: z.string().optional().describe('Comma-separated regex patterns to include (e.g. /blog/,/docs/)'),
+    exclude_patterns: z.string().optional().describe('Comma-separated regex patterns to exclude'),
+    stealth_mode: z.enum(['off', 'low', 'medium', 'high']).optional().describe('Anti-bot bypass level. Default: off'),
+    obey_robots: z.boolean().optional().describe('Respect robots.txt. Default: true (set false to bypass)'),
+  }),
+};
+
+export async function handleCrawlSite(args: z.infer<typeof crawlSiteTool.inputSchema>): Promise<string> {
+  const response = await apiClient.crawlSite({
+    start_url: args.start_url,
+    max_pages: args.max_pages ?? 50,
+    max_depth: args.max_depth ?? 2,
+    format: args.format ?? 'markdown',
+    include_links: args.include_links ?? true,
+    include_images: args.include_images ?? true,
+    url_patterns: args.url_patterns,
+    exclude_patterns: args.exclude_patterns,
+    stealth_mode: args.stealth_mode,
+    obey_robots: args.obey_robots,
+  });
+
+  return formatCrawlSite(response);
+}
+
+/**
  * Export all tools
  */
-export const tools = [webSearchTool, fetchWebpageTool, searchAndFetchTool, deepResearchTool];
+export const tools = [webSearchTool, fetchWebpageTool, searchAndFetchTool, deepResearchTool, crawlSiteTool];

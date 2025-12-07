@@ -9,7 +9,8 @@
 
 - 🔍 **Web Search** - Search across Google, DuckDuckGo, Bing, Brave, Wikipedia
 - 🧠 **Deep Research** - Multi-query parallel research with compiled reports
-- 🛡️ **FREE Stealth Mode** - Anti-bot bypass (Cloudflare, DataDome, etc.) - NEW!
+- 🌐 **Site Crawl** - Depth-limited crawling with Trafilatura extraction - NEW!
+- 🛡️ **FREE Stealth Mode** - Anti-bot bypass (Cloudflare, DataDome, etc.)
 - ⏰ **Time-Range Filters** - Filter results by recency (day, week, month, year)
 - 📄 **Enhanced Content Extraction** - Trafilatura-powered (Firecrawl-quality) extraction
 - 📝 **Markdown Output** - Get structured markdown from webpages
@@ -162,8 +163,8 @@ Perform comprehensive parallel research across multiple topics at once with AI-p
 - `breadth` (optional) - Results to fetch per query (1-5, default: 3)
 - `time_range` (optional) - Filter by recency: day, week, month, year
 - `max_content_length` (optional) - Max content per result (default: 30000)
-- `stealth_mode` (optional) - **NEW!** Anti-bot bypass: off, low, medium, high (default: off)
-- `auto_bypass` (optional) - **NEW!** Auto-escalate stealth if bot protection detected (default: false)
+- `stealth_mode` (optional) - Anti-bot bypass: off, low, medium, high (default: off)
+- `auto_bypass` (optional) - Auto-escalate stealth if bot protection detected (default: false)
 
 **What it does:**
 - ✅ Process up to 10 queries in **parallel** for speed
@@ -185,6 +186,41 @@ Deep research on "React vs Vue,Next.js features,frontend trends" from past month
 
 ```
 Comprehensive research: "climate solutions,renewable energy,carbon capture" with breadth: 5
+```
+
+### 5. `crawl_site` 🌐 **NEW!**
+Depth-limited site crawler powered by Scrapy + Trafilatura. Returns structured pages with content, metadata, links, and word counts. Supports FREE stealth mode.
+
+**Parameters:**
+- `start_url` (required) - Starting URL to crawl
+- `max_pages` (optional) - Max pages to crawl (1-200, default: 50)
+- `max_depth` (optional) - Link depth (0-5, default: 2)
+- `format` (optional) - Output format: text, markdown (default), html
+- `include_links` (optional) - Include extracted links (default: true)
+- `include_images` (optional) - Include image URLs (default: true)
+- `url_patterns` (optional) - Comma-separated regex to include (e.g. /blog/,/docs/)
+- `exclude_patterns` (optional) - Comma-separated regex to exclude
+- `stealth_mode` (optional) - Anti-bot bypass: off, low, medium, high (default: off)
+- `obey_robots` (optional) - Respect robots.txt (default: true; set false to bypass)
+
+**What it does:**
+- ✅ Depth-limited recursive crawling (Scrapy subprocess)
+- ✅ Trafilatura extraction with metadata + word counts
+- ✅ Include/exclude URL filtering
+- ✅ FREE stealth mode with optional auto-escalation on server
+- ✅ 15-minute crawl timeout and 30-minute cache
+
+**Examples:**
+```
+Crawl docs site: start_url=https://docs.example.com max_depth=3 url_patterns=/api/,/guides/
+```
+
+```
+Bypass robots on a small crawl: start_url=https://site.com max_pages=5 obey_robots=false stealth_mode=high
+```
+
+```
+Filter sections: start_url=https://blog.example.com url_patterns=/2024/,/tech/ exclude_patterns=/archive/
 ```
 
 ## 💡 Usage Examples

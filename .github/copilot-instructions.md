@@ -25,6 +25,7 @@ src/
 | `fetch_webpage` | `/fetch` | Extract content from URLs (Trafilatura) + stealth mode |
 | `search_and_fetch` | `/search-and-fetch` | Search + auto-fetch top results + stealth mode |
 | `deep_research` | `/deep-research` | Multi-query parallel research with compiled reports + stealth mode |
+| `crawl_site` | `/crawl-site` | Depth-limited site crawl with Trafilatura + stealth mode |
 
 ## FREE Stealth Mode (Anti-Bot Bypass)
 
@@ -59,7 +60,7 @@ export async function handleMyTool(args: z.infer<typeof myTool.inputSchema>): Pr
 ### Response Formatting (`formatters.ts`)
 - Return **Markdown strings** optimized for LLM consumption
 - Use `#` headers, `**bold**` for metadata, `truncateContent()` for length limits
-- Some tools (like `deep_research`) return `compiled_report` directly from API
+- Some tools (like `deep_research` and `crawl_site`) return compiled markdown from formatter or API
 
 ## Development Commands
 

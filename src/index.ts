@@ -13,7 +13,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { tools, handleWebSearch, handleFetchWebpage, handleSearchAndFetch, handleDeepResearch } from './tools.js';
+import { tools, handleWebSearch, handleFetchWebpage, handleSearchAndFetch, handleDeepResearch, handleCrawlSite } from './tools.js';
 
 /**
  * Create and configure MCP server
@@ -21,7 +21,7 @@ import { tools, handleWebSearch, handleFetchWebpage, handleSearchAndFetch, handl
 const server = new Server(
   {
     name: 'miyami-websearch-mcp',
-    version: '1.4.0',
+    version: '1.5.0',
   },
   {
     capabilities: {
@@ -87,6 +87,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         result = await handleDeepResearch(args as any);
         break;
 
+      case 'crawl_site':
+        result = await handleCrawlSite(args as any);
+        break;
+
       default:
         throw new Error(`Unknown tool: ${name}`);
     }
@@ -123,7 +127,7 @@ async function main() {
 
   // Log to stderr so it doesn't interfere with MCP protocol on stdout
   console.error('MiyaMi WebSearch MCP Server running on stdio');
-  console.error('Version: 1.4.0');
+  console.error('Version: 1.5.0');
   console.error('API: https://websearch.miyami.tech');
 }
 

@@ -4,7 +4,7 @@
  */
 
 import axios, { AxiosInstance, AxiosError } from 'axios';
-import type { SearchResponse, FetchResponse, SearchAndFetchResponse, DeepResearchResponse, ApiError } from './types.js';
+import type { SearchResponse, FetchResponse, SearchAndFetchResponse, DeepResearchResponse, CrawlSiteResponse, ApiError } from './types.js';
 
 // Hardcoded API URL - this is a free service, no configuration needed
 const API_BASE_URL = 'https://websearch.miyami.tech';
@@ -17,7 +17,7 @@ export class ApiClient {
       baseURL: API_BASE_URL,
       timeout: 60000, // 60 seconds to handle cold starts
       headers: {
-        'User-Agent': 'MiyaMi-WebSearch-MCP/1.4.0',
+        'User-Agent': 'MiyaMi-WebSearch-MCP/1.5.0',
         'Content-Type': 'application/json',
       },
     });
@@ -129,6 +129,32 @@ export class ApiClient {
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'deep-research');
+    }
+  }
+
+  /**
+   * Crawl Site - Depth-limited Scrapy crawler with Trafilatura extraction
+   */
+  async crawlSite(params: {
+    start_url: string;
+    max_pages?: number;
+    max_depth?: number;
+    format?: 'text' | 'markdown' | 'html';
+    include_links?: boolean;
+    include_images?: boolean;
+    url_patterns?: string;
+    exclude_patterns?: string;
+    stealth_mode?: 'off' | 'low' | 'medium' | 'high';
+    obey_robots?: boolean;
+  }): Promise<CrawlSiteResponse> {
+    try {
+      const response = await this.client.get<CrawlSiteResponse>('/crawl-site', {
+        params,
+        timeout: 900_000, // 15 minutes for deep crawls
+      });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error, 'crawl-site');
     }
   }
 
