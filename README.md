@@ -1,4 +1,4 @@
-# MiyaMi WebSearch MCP
+# Miyami WebSearch MCP
 
 [![npm version](https://badge.fury.io/js/miyami-websearch-mcp.svg)](https://www.npmjs.com/package/miyami-websearch-mcp/v/1.4.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
