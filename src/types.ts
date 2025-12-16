@@ -159,6 +159,37 @@ export interface CrawlSiteResponse {
   total_words: number;
 }
 
+export interface YouTubeTranscriptLanguage {
+  language_code: string;
+  language: string;
+  is_generated: boolean;
+  is_translatable: boolean;
+}
+
+export interface YouTubeTranscriptResponse {
+  success: boolean;
+  video_id: string;
+  video_url: string;
+  format: 'text' | 'json' | 'srt';
+  language: string;
+  translated_to?: string;
+  time_range?: {
+    start: number;
+    end: number;
+  };
+  stats: {
+    segment_count: number;
+    word_count: number;
+    duration_seconds: number;
+  };
+  transcript: string;
+}
+
+export interface YouTubeTranscriptLanguagesResponse {
+  video_id: string;
+  available_transcripts: YouTubeTranscriptLanguage[];
+}
+
 export interface ApiError {
   error: string;
   details?: string;

@@ -26,6 +26,7 @@ src/
 | `search_and_fetch` | `/search-and-fetch` | Search + auto-fetch top results + stealth mode |
 | `deep_research` | `/deep-research` | Multi-query parallel research with compiled reports + stealth mode |
 | `crawl_site` | `/crawl-site` | Depth-limited site crawl with Trafilatura + stealth mode |
+| `yt_transcript` | `/yt-transcript` | Fetch YouTube video transcripts with format/language options |
 
 ## FREE Stealth Mode (Anti-Bot Bypass)
 

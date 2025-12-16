@@ -4,7 +4,7 @@
  */
 
 import axios, { AxiosInstance, AxiosError } from 'axios';
-import type { SearchResponse, FetchResponse, SearchAndFetchResponse, DeepResearchResponse, CrawlSiteResponse, ApiError } from './types.js';
+import type { SearchResponse, FetchResponse, SearchAndFetchResponse, DeepResearchResponse, CrawlSiteResponse, YouTubeTranscriptResponse, YouTubeTranscriptLanguagesResponse, ApiError } from './types.js';
 
 // Hardcoded API URL - this is a free service, no configuration needed
 const API_BASE_URL = 'https://websearch.miyami.tech';
@@ -17,7 +17,7 @@ export class ApiClient {
       baseURL: API_BASE_URL,
       timeout: 60000, // 60 seconds to handle cold starts
       headers: {
-        'User-Agent': 'MiyaMi-WebSearch-MCP/1.5.0',
+        'User-Agent': 'MiyaMi-WebSearch-MCP/1.6.0',
         'Content-Type': 'application/json',
       },
     });
@@ -155,6 +155,28 @@ export class ApiClient {
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'crawl-site');
+    }
+  }
+
+  /**
+   * YouTube Transcript - Fetch transcripts from YouTube videos
+   */
+  async ytTranscript(params: {
+    video: string;
+    format?: 'text' | 'json' | 'srt';
+    lang?: string;
+    translate?: string;
+    start?: number;
+    end?: number;
+    list_langs?: boolean;
+  }): Promise<YouTubeTranscriptResponse | YouTubeTranscriptLanguagesResponse> {
+    try {
+      const response = await this.client.get<YouTubeTranscriptResponse | YouTubeTranscriptLanguagesResponse>('/yt-transcript', {
+        params,
+      });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error, 'yt-transcript');
     }
   }
 

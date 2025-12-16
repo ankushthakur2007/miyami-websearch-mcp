@@ -4,7 +4,7 @@
 
 import { z } from 'zod';
 import { apiClient } from './api-client.js';
-import { formatSearchResults, formatWebpageContent, formatSearchAndFetch, formatCrawlSite, truncateContent } from './formatters.js';
+import { formatSearchResults, formatWebpageContent, formatSearchAndFetch, formatCrawlSite, formatYouTubeTranscript, formatYouTubeLanguages, truncateContent } from './formatters.js';
 
 /**
  * Tool: web_search
@@ -188,6 +188,43 @@ export async function handleCrawlSite(args: z.infer<typeof crawlSiteTool.inputSc
 }
 
 /**
+ * Tool: yt_transcript
+ * Fetch YouTube video transcripts
+ */
+export const ytTranscriptTool = {
+  name: 'yt_transcript',
+  description: 'Fetch transcripts/captions from YouTube videos for LLM consumption. Supports multiple formats (text, JSON with timestamps, SRT subtitles), language selection, translation, and time-range slicing. Can also list available transcript languages for a video.',
+  inputSchema: z.object({
+    video: z.string().describe('YouTube video URL or 11-character video ID. Supports: full URL, short URL (youtu.be), embed URL, shorts URL, or direct ID'),
+    format: z.enum(['text', 'json', 'srt']).optional().describe('Output format: text (plain), json (with timestamps), srt (subtitles). Default: text'),
+    lang: z.string().optional().describe('Preferred language code (e.g., en, es, hi, fr). Default: auto (first available)'),
+    translate: z.string().optional().describe('Translate transcript to target language code (uses YouTube translation)'),
+    start: z.number().optional().describe('Start time in seconds for trimming transcript'),
+    end: z.number().optional().describe('End time in seconds for trimming transcript'),
+    list_langs: z.boolean().optional().describe('List available transcript languages instead of fetching. Default: false'),
+  }),
+};
+
+export async function handleYtTranscript(args: z.infer<typeof ytTranscriptTool.inputSchema>): Promise<string> {
+  const response = await apiClient.ytTranscript({
+    video: args.video,
+    format: args.format,
+    lang: args.lang,
+    translate: args.translate,
+    start: args.start,
+    end: args.end,
+    list_langs: args.list_langs,
+  });
+
+  // Check if it's a languages list response
+  if ('available_transcripts' in response) {
+    return formatYouTubeLanguages(response);
+  }
+
+  return formatYouTubeTranscript(response);
+}
+
+/**
  * Export all tools
  */
-export const tools = [webSearchTool, fetchWebpageTool, searchAndFetchTool, deepResearchTool, crawlSiteTool];
+export const tools = [webSearchTool, fetchWebpageTool, searchAndFetchTool, deepResearchTool, crawlSiteTool, ytTranscriptTool];

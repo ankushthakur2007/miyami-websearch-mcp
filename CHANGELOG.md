@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.0] - 2025-12-16
+
+### Added
+- **yt_transcript Tool**: Fetch YouTube video transcripts for LLM consumption
+  - Parameters: video (URL or ID), format (text/json/srt), lang, translate, start, end, list_langs
+  - Supports all YouTube URL formats: full, short, embed, shorts, direct ID
+  - Multiple output formats: plain text, JSON with timestamps, SRT subtitles
+  - Language selection and YouTube translation support
+  - Time-range slicing (start/end seconds)
+  - List available transcript languages with `list_langs: true`
+  - Stats: segment count, word count, duration
+  - 1-hour server-side caching
+
 ## [1.5.0] - 2025-12-07
 
 ### Added

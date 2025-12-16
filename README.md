@@ -1,6 +1,6 @@
 # Miyami WebSearch MCP
 
-[![npm version](https://badge.fury.io/js/miyami-websearch-mcp.svg)](https://www.npmjs.com/package/miyami-websearch-mcp/v/1.4.0)
+[![npm version](https://badge.fury.io/js/miyami-websearch-mcp.svg)](https://www.npmjs.com/package/miyami-websearch-mcp/v/1.6.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > Connect your LLM to the internet! Search the web and extract content from any webpage using the Model Context Protocol.
@@ -9,7 +9,8 @@
 
 - 🔍 **Web Search** - Search across Google, DuckDuckGo, Bing, Brave, Wikipedia
 - 🧠 **Deep Research** - Multi-query parallel research with compiled reports
-- 🌐 **Site Crawl** - Depth-limited crawling with Trafilatura extraction - NEW!
+- 🌐 **Site Crawl** - Depth-limited crawling with Trafilatura extraction
+- 🎬 **YouTube Transcripts** - Fetch captions/subtitles from any YouTube video - NEW!
 - 🛡️ **FREE Stealth Mode** - Anti-bot bypass (Cloudflare, DataDome, etc.)
 - ⏰ **Time-Range Filters** - Filter results by recency (day, week, month, year)
 - 📄 **Enhanced Content Extraction** - Trafilatura-powered (Firecrawl-quality) extraction
@@ -221,6 +222,53 @@ Bypass robots on a small crawl: start_url=https://site.com max_pages=5 obey_robo
 
 ```
 Filter sections: start_url=https://blog.example.com url_patterns=/2024/,/tech/ exclude_patterns=/archive/
+```
+
+### 6. `yt_transcript` 🎬 **NEW!**
+Fetch transcripts/captions from YouTube videos for LLM consumption. Supports multiple formats, language selection, translation, and time-range slicing.
+
+**Parameters:**
+- `video` (required) - YouTube video URL or 11-character video ID (supports all formats: full URL, youtu.be, embed, shorts)
+- `format` (optional) - Output format: text (default), json (with timestamps), srt (subtitles)
+- `lang` (optional) - Preferred language code (e.g., en, es, hi, fr). Default: auto
+- `translate` (optional) - Translate transcript to target language code
+- `start` (optional) - Start time in seconds for trimming
+- `end` (optional) - End time in seconds for trimming
+- `list_langs` (optional) - List available transcript languages instead of fetching (default: false)
+
+**What it does:**
+- ✅ Extract transcripts from any YouTube video with captions
+- ✅ Multiple output formats (plain text, JSON with timestamps, SRT subtitles)
+- ✅ Language selection for multilingual videos
+- ✅ Translation to any supported language (via YouTube)
+- ✅ Time-range slicing for specific segments
+- ✅ List available transcript languages
+- ✅ Stats: word count, segment count, duration
+- ✅ 1-hour server-side caching
+
+**Examples:**
+```
+Get transcript from YouTube video: video=dQw4w9WgXcQ format=text
+```
+
+```
+Get transcript with timestamps: video=https://www.youtube.com/watch?v=dQw4w9WgXcQ format=json
+```
+
+```
+Get Spanish transcript: video=dQw4w9WgXcQ lang=es
+```
+
+```
+Translate to French: video=dQw4w9WgXcQ translate=fr
+```
+
+```
+Get specific time range (60-120 seconds): video=dQw4w9WgXcQ start=60 end=120
+```
+
+```
+List available languages: video=dQw4w9WgXcQ list_langs=true
 ```
 
 ## 💡 Usage Examples

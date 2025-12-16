@@ -2,7 +2,7 @@
  * Response formatting utilities for LLM consumption
  */
 
-import type { SearchResponse, FetchResponse, SearchAndFetchResponse, CrawlSiteResponse } from './types.js';
+import type { SearchResponse, FetchResponse, SearchAndFetchResponse, CrawlSiteResponse, YouTubeTranscriptResponse, YouTubeTranscriptLanguagesResponse } from './types.js';
 
 /**
  * Format search results for LLM consumption
@@ -231,4 +231,55 @@ export function truncateContent(content: string, maxLength: number): string {
   }
   
   return content.substring(0, maxLength) + '\n\n[Content truncated...]';
+}
+
+/**
+ * Format YouTube transcript for LLM consumption
+ */
+export function formatYouTubeTranscript(response: YouTubeTranscriptResponse): string {
+  const lines: string[] = [];
+
+  lines.push(`# YouTube Transcript`);
+  lines.push(`**Video ID:** ${response.video_id}`);
+  lines.push(`**URL:** ${response.video_url}`);
+  lines.push(`**Format:** ${response.format}`);
+  lines.push(`**Language:** ${response.language}`);
+  
+  if (response.translated_to) {
+    lines.push(`**Translated To:** ${response.translated_to}`);
+  }
+  
+  if (response.time_range) {
+    lines.push(`**Time Range:** ${response.time_range.start}s - ${response.time_range.end}s`);
+  }
+
+  lines.push(`\n**Stats:**`);
+  lines.push(`- Segments: ${response.stats.segment_count}`);
+  lines.push(`- Words: ${response.stats.word_count}`);
+  lines.push(`- Duration: ${response.stats.duration_seconds.toFixed(1)}s`);
+
+  lines.push(`\n## Transcript\n`);
+  lines.push(response.transcript);
+
+  return lines.join('\n');
+}
+
+/**
+ * Format YouTube available languages for LLM consumption
+ */
+export function formatYouTubeLanguages(response: YouTubeTranscriptLanguagesResponse): string {
+  const lines: string[] = [];
+
+  lines.push(`# Available Transcripts`);
+  lines.push(`**Video ID:** ${response.video_id}\n`);
+
+  lines.push(`## Languages (${response.available_transcripts.length} available)\n`);
+
+  response.available_transcripts.forEach((lang, index) => {
+    const generated = lang.is_generated ? ' (auto-generated)' : ' (manual)';
+    const translatable = lang.is_translatable ? ' ✓ translatable' : '';
+    lines.push(`${index + 1}. **${lang.language}** (\`${lang.language_code}\`)${generated}${translatable}`);
+  });
+
+  return lines.join('\n');
 }
