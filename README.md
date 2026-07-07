@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/ankushthakur2007-miyami-websearch-mcp-badge.png)](https://mseep.ai/app/ankushthakur2007-miyami-websearch-mcp)
+
 # Miyami WebSearch MCP
 
 [![npm version](https://badge.fury.io/js/miyami-websearch-mcp.svg)](https://www.npmjs.com/package/miyami-websearch-mcp/v/1.6.0)
